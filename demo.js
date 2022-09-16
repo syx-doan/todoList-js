@@ -2,9 +2,13 @@ function createElementLi(todo) {
   //get lli roif render
   const tempalteTodo = document.getElementById('todoTemplate');
   const todoElement = tempalteTodo.content.firstElementChild.cloneNode(true);
+  todoElement.dataset.id =todo.id;
   const divElement = todoElement.querySelector('.todo');
   const titleElement = todoElement.querySelector('.todo__title');
   titleElement.textContent = todo.title;
+  
+  todoElement.dataset.status = todo.status;
+  
 
   //click
   const markAsDoneButton = todoElement.querySelector('button.mark-as-done');
@@ -40,11 +44,11 @@ function createElementLi(todo) {
 
   
   ///add eidt button
-  const editBtn = todoElement.querySelector('.edit');
+  const editBtn = todoElement.querySelector('button.edit');
   editBtn.addEventListener('click', () => {
     //đảm bảo todo là mới nhất
     const todoList = getTodoList();
-    const latesTodo = todoList.find((x) => x.id === todo.id)
+    const latesTodo = todoList.find((x) => x.id === todo.id);
 
     populateTodo(latesTodo);
   });
@@ -56,6 +60,7 @@ function populateTodo(todo) {
   //set id
   const todoForm = document.getElementById('todoList');
   todoForm.dataset.id = todo.id;
+ 
 
   // value form coontrol
   //set todotext input
@@ -83,33 +88,33 @@ function getTodoList() {
 function handleSubmitTodo(event) {
   event.preventDefault();
 
-  //
   const todoForm = document.getElementById('todoFormId');
   const todoInput = document.getElementById('todoText');
+  // 
   const isEdit = Boolean(todoForm.dataset.id);
+  
   if (isEdit) {
-    //tifm todo
-    const todoList = getTodoList();
-    const index = todoList.findIndex((x) => x.id.toString() === todoForm.dataset.id);
-    // update content
-    todoList[index].title = todoInput.value;
-    // save
-    localStorage.setItem('todo_list', JSON.stringify(todoList));
-    //  apply vao dom
-    // tìm li element có id = todoForm.dataset.id
-    const liElement = document.querySelector(`ul#todoList > li[data-id="${todoForm.dataset.id}"]`);
-    //tìm dduocj r thì sẽ cập nhập lại
-    if (liElement) {
-      // liElement.textContent = todoInput.value;
-      const titleElement = liElement.querySelector('.todo__title');
-       titleElement.textContent = todoInput.value;
+    
+   
+  //tim todo
+  const todoList = getTodoList();
+  const index = todoList.findIndex((x) => x.id.toString() === todoForm.dataset.id);
+  // update content
 
-    }
-  }else {
+  todoList[index].title = todoInput.value;
+  // save
+  localStorage.setItem('todo_list', JSON.stringify(todoList));
+  //  apply vao dom
+  // tìm li element có id = todoForm.dataset.id
+  
+  const liElement = document.querySelector(`ul#todoList > li[data-id="${todoForm.dataset.id}"]`);
+  //tìm dduocj r thì sẽ cập nhập lại
+    const titleElement = liElement.querySelector('.todo__title');
+
+    titleElement.textContent = todoInput.value; 
+  } else {
     ///tao new todo
-    const newTodo = { id: Date.now(),
-         title: todoInput.value,
-          status: 'finish' };
+    const newTodo = {id: Date.now(), title: todoInput.value, status: 'pending'  };
 
     //save
     const todoList = getTodoList();
@@ -122,11 +127,12 @@ function handleSubmitTodo(event) {
     ulElement.appendChild(newElement);
   }
 
-
+  
   delete todoForm.dataset.id;
   //resetFrom
   todoForm.reset();
 }
+
 
 //IFE
 (() => {
@@ -137,3 +143,6 @@ function handleSubmitTodo(event) {
   const todoForm = document.getElementById('todoFormId');
   todoForm.addEventListener('submit', handleSubmitTodo);
 })();
+
+
+// 
